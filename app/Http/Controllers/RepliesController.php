@@ -8,6 +8,8 @@ class RepliesController extends Controller
 {
     public function store(Thread $thread)
     {
+        //dd(request());
+
         $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id()

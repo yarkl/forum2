@@ -3,30 +3,36 @@
 @section('content')
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-8 ">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <a href="#">{{ $thread->creator->name }}</a>:posted
-                        {{ $thread->title }}</div>
+                        <div class="level">
+                           <span><a href="#">{{ $thread->creator->name }}</a>:posted
+                               {{ $thread->title }}
+                           </span>
+                            <form method="POST" action="{{ $thread->path()}}">
+                                {{ csrf_field() }}
+
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
 
                     <div class="panel-body">
                         {{ $thread->body }}
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                @foreach($thread->replies as $reply)
+
+                @foreach($replies as $reply)
                     @include('threads.reply')
                 @endforeach
-            </div>
-        </div>
+
+
 
         @if(auth()->check())
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+
+
                 <form method="POST" action="{{ $thread->path(). '/replies' }}">
                     <div class="form-group">
                         {{csrf_field()}}
@@ -36,12 +42,25 @@
                         <button type="submit" class="btn btn-default">Post</button>
                 </form>
 
-            </div>
-        </div>
+
+
         @else
 
-              <p class="text-center"><a href="{{ route('login') }}">Sign in</a> to participate</p>
+              <p class="text"><a href="{{ route('login') }}">Sign in</a> to participate</p>
 
        @endif()
+        </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+
+
+                    <div class="panel-body">
+                        <p> This  thread was published {{ $thread->created_at->diffForHumans() }}</p>by
+                        <a href="">{{ $thread->creator->name }}</a> and has {{ $thread->replies_count}} {{ str_plural('replies',$thread->replies_count ) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ $replies->links() }}
     </div>
 @endsection

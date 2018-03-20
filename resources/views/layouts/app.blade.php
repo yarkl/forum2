@@ -12,6 +12,10 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        body {padding-bottom: 100px}
+        .level { display:flex; align-items: center; justify-content: space-between}
+    </style>
 </head>
 <body style="padding-bottom:100px;">
     <div id="app" >
@@ -36,7 +40,29 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;<li><a href="{{ route('threads') }}">All threads</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Threads <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                
+                               <li><a href="/threads">All Threads</a></li>
+                               @if(auth()->check())
+                               <li><a href="/threads?by={{ auth()->user()->name}}">My Threads</a></li>
+                               @endif
+                            </ul>
+                        </li>
+
+                        @if(auth()->check())
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Channels <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                @foreach(\App\Channel::all() as $channel)
+                                <li><a href="/threads/{{$channel->slug}}">{{ $channel->slug }}</a></li>
+                                @endforeach
+                            </ul>
+                        </li>
+
+                        <li><a href="{{ route('threads_create') }}">Create Thread</a></li>
+                        @endif
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -62,6 +88,9 @@
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                             {{ csrf_field() }}
                                         </form>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('profile', Auth::user()) }}">My Profile</a>
                                     </li>
                                 </ul>
                             </li>

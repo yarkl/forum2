@@ -29,10 +29,24 @@ class ThreadTest extends TestCase
     function test_can_add_reply()
     {
         $this->threads->addReply([
-           'body' => 'Vokazal',
+           'body' => 'Vokzal',
             'user_id' => 1
         ]);
 
         $this->assertCount(1 ,$this->threads->replies);
+    }
+
+
+    function test_a_thread_belongs_to_a_channel()
+    {
+        $thread = create('App\Thread');
+
+        $this->assertInstanceOf('App\Channel', $thread->channel);
+    }
+
+    function thread_have_a_slug()
+    {
+        $thread = create('App\Thread');
+        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread->path());
     }
 }

@@ -2,21 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Thread;
+use App\Channel;
+use App\Filters\ThreadsFilter;
 class ThreadsController extends Controller
 {
 
-    public function index(){
-
-        $threads = Thread::latest()->get();
-
-        return view('threads.index', compact('threads'));
+    public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show','destroy']);
     }
 
 
-    public function show(Thread $thread){
+    public function index(Channel $channel, ThreadsFilter $filters){
 
-       return view('threads.show', compact('thread'));
+        if ($channel->exists) {
+            //dd($channel->threads());
+            $threads = $channel->threads()->latest();
+        } else {
+            $threads = Thread::latest();
+        }
+        $threads = $threads->filter($filters)->get();
+
+        if(request()->wantsJson()){
+            return $threads;
+        }
+
+
+       return view('threads.index', compact('threads'));
     }
+
+
+    public function show($channel,Thread $thread){
+
+        return view('threads.show', [
+            'thread' => $thread,
+            'replies' => $thread->replies()->paginate(1)
+        ]);
+    }
+
+    public function store(Request $request){
+        //dd(request()->all());
+        $request->validate([
+            'title' => 'required',
+            'body' => 'required',
+            'channel_id' => 'required|exists:channels,id'
+        ]);
+
+        $thread = Thread::create([
+            'user_id' => auth()->id(),
+            'channel_id' => request('channel_id'),
+            'title' => request('title'),
+            'body' => request('body'),
+        ]);
+        return redirect($thread->path());
+    }
+
+
+    public function create(){
+        return view('threads.create');
+    }
+
+    public function destroy($channel,Thread $thread)
+    {
+        //$thread->replies()->delete();
+        $thread->delete();
+        return redirect('threads');
+    }
+
+
 }

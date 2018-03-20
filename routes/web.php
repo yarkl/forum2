@@ -14,11 +14,15 @@
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/threads', 'ThreadsController@index')->name('threads');
-Route::get('/threads/{thread}', 'ThreadsController@show');
-
+Route::get('/threads/{channel}/{thread}', 'ThreadsController@show');
+Route::post('/threads/{channel}/{thread}', 'ThreadsController@destroy');
+Route::get('thread/create', 'ThreadsController@create')->name('threads_create');
+Route::get('/threads/{channel}', 'ThreadsController@index');
+Route::get('/threads/', 'ThreadsController@index');
+Route::get('/profiles/{user}', 'ProfileController@show')->name('profile');
 Auth::routes();
-
 Route::get('/home', 'HomeController@index')->name('home');
-Route::post('/threads/{thread}/replies', 'RepliesController@store');
+Route::post('/threads/{channel}/{thread}/replies', 'RepliesController@store');
+Route::post('/threads', 'ThreadsController@store');
+Route::post('/replies/{reply}/favorites','FavoritesController@store')->name('favorite');
+

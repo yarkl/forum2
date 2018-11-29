@@ -12,6 +12,7 @@ class ThreadsFilter
 {
     private $request;
     protected $builder;
+
     public function __construct(\Illuminate\Http\Request $request)
     {
         $this->request = $request;
@@ -25,9 +26,6 @@ class ThreadsFilter
         }elseif($popular = $this->request->popular){
             return $this->popular();
         }
-
-
-
     }
 
     public function by($username){

@@ -29,7 +29,7 @@ class ThreadTest extends TestCase
     function test_can_add_reply()
     {
         $this->threads->addReply([
-           'body' => 'Vokzal',
+            'body' => 'Vokzal',
             'user_id' => 1
         ]);
 

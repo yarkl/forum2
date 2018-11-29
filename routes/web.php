@@ -15,7 +15,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/threads/{channel}/{thread}', 'ThreadsController@show');
-Route::post('/threads/{channel}/{thread}', 'ThreadsController@destroy');
+Route::post('/threads/{channel}/{thread}', 'ThreadsController@destroy')->name('profile');
 Route::get('thread/create', 'ThreadsController@create')->name('threads_create');
 Route::get('/threads/{channel}', 'ThreadsController@index');
 Route::get('/threads/', 'ThreadsController@index');

@@ -22,8 +22,6 @@ class ThreadsFeatureTest extends TestCase
 
         $response = $this->get('threads');
         $response->assertSee($this->threads->title);
-
-
     }
 
     public function test_a_user_can_browse_a_single_thread()

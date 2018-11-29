@@ -38,7 +38,6 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-        //dd($reply);
         $this->replies()->create($reply);
     }
 

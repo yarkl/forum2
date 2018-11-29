@@ -7,14 +7,16 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="level">
-                           <span><a href="#">{{ $thread->creator->name }}</a>:posted
+                           <span><a href="{{ route('profile',$thread->creator) }}">{{ $thread->creator->name }}</a>:posted
                                {{ $thread->title }}
                            </span>
+                         @can('update',$thread)
                             <form method="POST" action="{{ $thread->path()}}">
                                 {{ csrf_field() }}
 
                                 <button class="btn btn-danger">Delete</button>
                             </form>
+                         @endcan
                         </div>
                     </div>
 

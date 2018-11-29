@@ -66,16 +66,19 @@ class CreateThreadTest extends TestCase
             ->assertSessionHasErrors('channel_id');
     }
 
-    function test_guest_cant_delete_a_thread(){
+    function unauthorized_users_cant_delete_a_thread(){
         $this->withExceptionHandling();
         $thread = create('App\Thread');
         $response = $this->delete($thread->path());
         $response->assertRedirect('/login');
+        $this->signIn();
+        $response->assertRedirect('/login');
+        $this->delete($thread->path())->assertStatus(403);
     }
 
     function test_a_thread_can_be_deleted(){
         $this->signIn();
-        $thread = create('App\Thread');
+        $thread = create('App\Thread',['user_id' => auth()->id()]);
         $reply = create('App\Reply',['thread_id' => $thread->id]);
         $this->json('DELETE',$thread->path());
         $this->assertDatabaseMissing('threads', ['id' => $thread->id]);

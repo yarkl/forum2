@@ -1,47 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
- <div class="container">
-     <div class="page-heading">
-         <h1>{{ $profileUser->name }} <small>Since {{ $profileUser->created_at->diffForHumans() }}</small></h1>
-         <hr>
-     </div>
-     <div class="row">
-         <div class="col-md-8 ">
-             @foreach ($threads as $thread)
-             <div class="panel panel-default">
-                 <div class="panel-heading">
-                     <div class="level">
-                         <span>
-                             <a href="{{ route('profile',$thread->creator) }}">{{ $thread->creator->name }}</a> Posted: {{ $thread->title }}
-                         </span>
-                         <span>{{ $thread->created_at->diffForHumans() }}</span>
-                     </div>
-                 </div>
-                 <div class="panel-body">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="page-header">
+                    <avatar-form :user="{{ $profileUser }}"></avatar-form>
+                </div>
 
-                         <article>
-                             <div class="level">
-                                 <h4>
-                                     <a href="{{ $thread->path() }}">
-                                         {{ $thread->title }}
-                                     </a>
-                                 </h4>
-                                 <a href="{{ $thread->path() }}"><strong>{{ $thread->replies_count }} {{ str_plural('comments',$thread->replies_count ) }}</strong></a>
-                             </div>
+                @forelse ($activities as $date => $activity)
+                    <h3 class="page-header">{{ $date }}</h3>
 
-                             <div class="body">{{ $thread->body }}</div>
-                         </article>
-
-                         <hr>
-
-                 </div>
-             </div>
-             @endforeach
-         </div>
-         {{ $threads->links() }}
-     </div>
-
-
-
+                    @foreach ($activity as $record)
+                        @if (view()->exists("profiles.activities.{$record->type}"))
+                            @include ("profiles.activities.{$record->type}", ['activity' => $record])
+                        @endif
+                    @endforeach
+                @empty
+                    <p>There is no activity for this user yet.</p>
+                @endforelse
+            </div>
+        </div>
+    </div>
 @endsection

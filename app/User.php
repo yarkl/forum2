@@ -19,4 +19,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Thread', 'user_id')->latest();
     }
 
+    public function activity(){
+        return $this->hasMany('App\Activity', 'user_id');
+    }
+
+
+
 }

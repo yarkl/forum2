@@ -24,9 +24,9 @@ class ProfileTest extends TestCase
 
 
   public function test_profile_display_all_threads_assoc_with_a_user(){
-      $user = create('App\User');
-      $thread = create('App\Thread',['user_id' => $user->id]);
-      $this->get('/profiles/'.$user->name )
+      $this->signIn();
+      $thread = create('App\Thread',['user_id' => auth()->id()]);
+      $this->get('/profiles/'.auth()->user()->name)
           ->assertSee($thread->title)
           ->assertSee($thread->body);
 

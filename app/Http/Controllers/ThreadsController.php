@@ -57,12 +57,14 @@ class ThreadsController extends Controller
             'title' => request('title'),
             'body' => request('body'),
         ]);
-        return redirect($thread->path());
+        return redirect($thread->path())
+            ->with('flash', 'Your thread has been published!');
     }
 
 
     public function create(){
-        return view('threads.create');
+        return view('threads.create')
+            ;
     }
 
     public function destroy($channel,Thread $thread)

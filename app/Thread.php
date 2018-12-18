@@ -2,6 +2,7 @@
 
 namespace App;
 
+use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
@@ -17,13 +18,14 @@ class Thread extends Model
             $builder->withCount('replies');
         });
         static::deleting(function($thread){
-            $thread->replies()->delete();
+            $thread->replies->each->delete();
         });
 
     }
 
 
-    public function path(){
+    public function path()
+    {
 
         return '/threads/' . $this->channel->slug . '/' . $this->id;
     }

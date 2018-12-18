@@ -52,4 +52,12 @@ if (token) {
 //     key: 'your-pusher-key',
 //     cluster: 'mt1',
 //     encrypted: true
-// });
+// });\
+
+window.Vue = require('vue');
+
+window.Event = new Vue();
+
+window.flash = function (message) {
+    window.Event.$emit('flash', message);
+};

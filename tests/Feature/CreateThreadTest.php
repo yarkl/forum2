@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Activity;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
@@ -37,7 +38,6 @@ class CreateThreadTest extends TestCase
 
     function test_guest_cannot_see_create_thread_page()
     {
-
         $this->withExceptionHandling()->get('thread/create')
             ->assertRedirect('/login');
     }
@@ -80,9 +80,14 @@ class CreateThreadTest extends TestCase
         $this->signIn();
         $thread = create('App\Thread',['user_id' => auth()->id()]);
         $reply = create('App\Reply',['thread_id' => $thread->id]);
-        $this->json('DELETE',$thread->path());
+        $this->post($thread->path());
         $this->assertDatabaseMissing('threads', ['id' => $thread->id]);
-        $this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        $this->assertEquals(0,Activity::count());
+        /*$this->assertDatabaseMissing('replies', ['id' => $reply->id]);
+        $this->assertDatabaseMissing('replies', [
+            'subject_id' => $thread->id,
+            'subject_type' => get_class($thread)
+        ]);*/
     }
 
 }

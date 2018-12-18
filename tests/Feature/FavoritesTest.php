@@ -39,7 +39,7 @@ class FavoritesTest extends TestCase
 
             $this->post('/replies/' . $reply->id .'/favorites');
         }catch (\Exception $e){
-            $this->fail('Did not expect to insert');
+            $this->fail('Did not expect to insert two records');
         }
 
         $this->assertCount(1,$reply->favorites);

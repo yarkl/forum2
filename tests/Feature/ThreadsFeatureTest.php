@@ -54,10 +54,11 @@ class ThreadsFeatureTest extends TestCase
     {
         $this->signIn(create('App\User',['name' => 'Yaroslav']));
         $threadByYaroslav = create('App\Thread',['user_id' => auth()->id()]);
-        $thread = create('App\Thread');
-        $this->get('threads?by=Yaroslav')
+        $threadNot = create('App\Thread');
+        $name = auth()->user()->name;
+        $this->get("/threads?by={$name}")
             ->assertSee($threadByYaroslav)
-            ->assertDontSee($thread);
+            ->assertDontSee($threadNot);
     }
 
     public function test_a_user_can_filter_threads_by_popularity(){

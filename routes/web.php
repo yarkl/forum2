@@ -21,6 +21,7 @@ Route::get('/threads/{channel}', 'ThreadsController@index');
 Route::get('/threads/', 'ThreadsController@index');
 Route::get('/profiles/{user}', 'ProfileController@show')->name('profile');
 Auth::routes();
+Route::delete('/replies/{reply}','RepliesController@destroy');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/threads/{channel}/{thread}/replies', 'RepliesController@store');
 Route::post('/threads', 'ThreadsController@store');

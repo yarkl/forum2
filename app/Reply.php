@@ -9,7 +9,10 @@ class Reply extends Model
     use Favouritable,RecordsActivity;
 
     protected $guarded = [];
+
     protected $with = ['owner','favorites'];
+
+    protected $appends = ['favoritesCount', 'isFavorited'];
 
     public function owner()
     {

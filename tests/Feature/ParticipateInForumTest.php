@@ -65,7 +65,7 @@ class ParticipateInForumTest extends TestCase
 
         $this->patch("/replies/{$reply->id}",['body' => $reply->body])->assertStatus(200);
 
-        $this->assertDatabaseMissing('replies', ['id' => $reply->id,'body' => $reply->body]);
+        $this->assertDatabaseHas('replies', ['id' => $reply->id,'body' => $reply->body]);
     }
 
 }

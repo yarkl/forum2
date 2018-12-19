@@ -29,6 +29,14 @@ class RepliesController extends Controller
 
         $reply->delete();
 
+        if(\request()->wantsJson()){
+            return response('Reply has been deleted',200);
+        }
+
         return back(302);
+    }
+
+    public function update(Reply $reply){
+        $reply->update(['body' => \request('body')]);
     }
 }

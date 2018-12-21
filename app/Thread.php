@@ -10,6 +10,7 @@ class Thread extends Model
     use RecordsActivity;
 
     protected $guarded = [];
+
     protected $with = ['creator','channel'];
 
     public static function boot(){
@@ -23,38 +24,35 @@ class Thread extends Model
 
     }
 
-
     public function path()
     {
-
         return '/threads/' . $this->channel->slug . '/' . $this->id;
     }
-
 
     public function replies()
     {
         return $this->hasMany('App\Reply');
     }
 
-
-    public function creator(){
+    public function creator()
+    {
         return $this->belongsTo('App\User', 'user_id');
     }
 
     public function addReply($reply)
     {
-        $this->replies()->create($reply);
+        return $this->replies()->create($reply);
     }
 
-
-    public function channel(){
+    public function channel()
+    {
         return $this->belongsTo(Channel::class);
     }
 
-    public function repliesPath(){
+    public function repliesPath()
+    {
         return '/threads/' . $this->channel->slug . '/' . $this->id .'/replies';
     }
-
 
     public function scopeFilter($query, $filters)
     {

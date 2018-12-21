@@ -9,16 +9,25 @@ class RepliesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except('index');
+    }
+
+    public function index($channelId,Thread $thread)
+    {
+        return $thread->replies()->paginate(3);
     }
 
     public function store($channelId, Thread $thread)
     {
         $this->validate(request(), ['body' => 'required']);
-        $thread->addReply([
+        $reply = $thread->addReply([
             'body' => request('body'),
             'user_id' => auth()->id()
         ]);
+
+        if (request()->expectsJson()) {
+            return $reply->load('owner');
+        }
 
         return redirect($thread->path())->with('flash', 'Your reply has been published!');;
     }

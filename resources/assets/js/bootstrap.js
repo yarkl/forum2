@@ -58,6 +58,14 @@ window.Vue = require('vue');
 
 window.Event = new Vue();
 
+Vue.prototype.authorize = function (handler) {
+    // Additional admin privileges here.
+    let user = window.App.user;
+
+    return user ? handler(user) : false;
+};
+
+
 window.flash = function (message) {
     window.Event.$emit('flash', message);
 };

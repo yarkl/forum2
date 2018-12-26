@@ -17,7 +17,7 @@ class ThreadsFeatureTest extends TestCase
     }
 
 
-    public function test_a_user_can_browse_a_thread()
+    public function test_a_user_can_browse_a_threads()
     {
 
         $response = $this->get('threads');
@@ -31,14 +31,6 @@ class ThreadsFeatureTest extends TestCase
         $response->assertSee($thread->title);
     }
 
-
-    public function test_a_user_can_read_replies_that_are_associated_with_a_thread()
-    {
-        $thread = create('App\Thread');
-        $reply = factory('App\Reply')->create(['thread_id' => $thread->id]);
-        $this->get($thread->path())
-            ->assertSee($reply->body);
-    }
 
     public function test_a_user_can_filter_threads_by_channel()
     {
@@ -61,7 +53,8 @@ class ThreadsFeatureTest extends TestCase
             ->assertDontSee($threadNot);
     }
 
-    public function test_a_user_can_filter_threads_by_popularity(){
+    public function test_a_user_can_filter_threads_by_popularity()
+    {
 
         $threadWithTwoReplies = create('App\Thread');
         create('App\Reply',['thread_id' => $threadWithTwoReplies], 2);
@@ -70,6 +63,17 @@ class ThreadsFeatureTest extends TestCase
         $response = $this->getJson('threads?popular=1')->json();
         $this->assertEquals([3,2,0], array_column($response,'replies_count'));
     }
+
+    public function test_a_user_can_filter_unanswered_threads()
+    {
+        create('App\Thread',[],2);
+        $threadWithTwoReplies = create('App\Thread');
+        create('App\Reply',['thread_id' => $threadWithTwoReplies], 2);
+        $response = $this->getJson('threads?unanswered=1')->json();
+        $this->assertEquals([0,0,0], array_column($response,'replies_count'));
+        $this->assertCount(3,$response);
+    }
+
 
 
 

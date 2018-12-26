@@ -8,9 +8,12 @@
 namespace  App\Filters;
 use App\User;
 use App\Thread;
+use Illuminate\Support\Facades\DB;
+
 class ThreadsFilter
 {
     private $request;
+
     protected $builder;
 
     public function __construct(\Illuminate\Http\Request $request)
@@ -25,7 +28,19 @@ class ThreadsFilter
             return $this->by($username);
         }elseif($popular = $this->request->popular){
             return $this->popular();
+        }elseif($popular = $this->request->unanswered){
+            return $this->unanswered();
         }
+    }
+
+    public function unanswered(){
+        $threads = Thread::whereNotExists(function ($query){
+            $query->select(DB::raw(1))
+                ->from('replies')
+                ->whereRaw('replies.thread_id = threads.id');
+        });
+
+        return $threads;
     }
 
     public function by($username){

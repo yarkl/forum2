@@ -34,6 +34,27 @@ class Thread extends Model
         return $this->hasMany('App\Reply');
     }
 
+    public function subscribe($userId = null)
+    {
+        $this->subscription()->create(
+            [
+                'thread_id' => $this->id,
+                'user_id' => $userId != null ? $userId : auth()->id()
+            ]
+        );
+    }
+
+
+    public function unsubscribe($userId = null)
+    {
+        $this->subscription()->where(['user_id' => $userId != null ? $userId : auth()->id()])->delete();
+    }
+
+    public function subscription()
+    {
+        return $this->hasMany(ThreadSubscription::class);
+    }
+
     public function creator()
     {
         return $this->belongsTo('App\User', 'user_id');

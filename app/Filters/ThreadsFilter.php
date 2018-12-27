@@ -28,7 +28,7 @@ class ThreadsFilter
             return $this->by($username);
         }elseif($popular = $this->request->popular){
             return $this->popular();
-        }elseif($popular = $this->request->unanswered){
+        }elseif($unanswered = $this->request->unanswered){
             return $this->unanswered();
         }
     }

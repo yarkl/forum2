@@ -44,9 +44,12 @@ class ThreadTest extends TestCase
         $this->assertInstanceOf('App\Channel', $thread->channel);
     }
 
-    function thread_have_a_slug()
+    function test_thread_have_a_slug()
     {
         $thread = create('App\Thread');
         $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread->path());
     }
+
+
+
 }

@@ -13,6 +13,8 @@ class Thread extends Model
 
     protected $with = ['creator','channel'];
 
+    protected $appends = ['isSubscribedTo'];
+
     public static function boot(){
         parent::boot();
         static::addGlobalScope('replyCount' , function($builder){
@@ -53,6 +55,11 @@ class Thread extends Model
     public function subscription()
     {
         return $this->hasMany(ThreadSubscription::class);
+    }
+
+    public function getIsSubscribedToAttribute()
+    {
+        return $this->subscription()->where(['user_id' => auth()->id()])->exists();
     }
 
     public function creator()

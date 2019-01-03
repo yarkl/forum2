@@ -18,6 +18,7 @@ class CreateThreadSubscriptionsTable extends Migration
             $table->integer('thread_id');
             $table->integer('user_id');
             $table->timestamps();
+            $table->unique(['thread_id','user_id']);
         });
     }
 

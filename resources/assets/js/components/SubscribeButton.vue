@@ -1,5 +1,5 @@
 <template>
-    <button :class="classes" @click="subscribe">Subscribe</button>
+    <button :class="classes" @click="subscribe">{{ name }}</button>
 </template>
 
 <script>
@@ -7,9 +7,20 @@
         name: "SubscribeButton",
         props:['active'],
 
+        data(){
+            return {
+                'name': this.active ? this.name = "Unsubscribe" : this.name = "Subscribe"
+            }
+        },
+
         computed:{
             classes(){
                 return ['btn',this.active == true ? "btn-default" : "btn-primary"];
+            }
+        },
+        watch:{
+            active(){
+                this.active ? this.name = "Unsubscribe" : this.name = "Subscribe";
             }
         },
 

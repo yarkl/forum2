@@ -33,6 +33,8 @@ class ThreadSubscriptionTest extends TestCase
     {
         $thread = create(Thread::class);
 
+        $thread->subscribe($userId = 1);
+
         $thread->unsubscribe($userId = 1);
 
         $this->assertDatabaseMissing('thread_subscriptions',[

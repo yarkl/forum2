@@ -44202,7 +44202,7 @@ exports = module.exports = __webpack_require__(3)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -44222,9 +44222,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     name: "SubscribeButton",
     props: ['active'],
 
+    data: function data() {
+        return {
+            'name': this.active ? this.name = "Unsubscribe" : this.name = "Subscribe"
+        };
+    },
+
+
     computed: {
         classes: function classes() {
             return ['btn', this.active == true ? "btn-default" : "btn-primary"];
+        }
+    },
+    watch: {
+        active: function active() {
+            this.active ? this.name = "Unsubscribe" : this.name = "Subscribe";
         }
     },
 
@@ -44247,7 +44259,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("button", { class: _vm.classes, on: { click: _vm.subscribe } }, [
-    _vm._v("Subscribe")
+    _vm._v(_vm._s(_vm.name))
   ])
 }
 var staticRenderFns = []

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Notifications\ThreadNotification;
 use function foo\func;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,9 +47,12 @@ class Thread extends Model
         );
     }
 
-
     public function unsubscribe($userId = null)
     {
+        /*$this->subscription
+            ->where('user_id','=',$userId != null ? $userId : auth()->id())[0]
+            ->user->notificatons->where('notifiable_type','=',self::class)
+            ->delete();*/
         $this->subscription()->where(['user_id' => $userId != null ? $userId : auth()->id()])->delete();
     }
 
@@ -69,7 +73,13 @@ class Thread extends Model
 
     public function addReply($reply)
     {
-        return $this->replies()->create($reply);
+        $reply = $this->replies()->create($reply);
+
+        $this->subscription->filter(function ($rep) use ($reply){
+            return $rep->user_id != $reply->id;
+        })->each->notify($reply);
+
+        return $reply;
     }
 
     public function channel()

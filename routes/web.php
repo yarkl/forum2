@@ -11,9 +11,7 @@
 |
 */
 Auth::routes();
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'ThreadsController@index');
 Route::get('/threads/', 'ThreadsController@index');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/threads/{channel}', 'ThreadsController@index');

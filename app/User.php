@@ -18,11 +18,13 @@ class User extends Authenticatable
         return 'name';
     }
 
-    public function threads(){
+    public function threads()
+    {
         return $this->hasMany('App\Thread', 'user_id')->latest();
     }
 
-    public function activity(){
+    public function activity()
+    {
         return $this->hasMany('App\Activity', 'user_id');
     }
 

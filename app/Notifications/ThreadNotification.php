@@ -54,13 +54,14 @@ class ThreadNotification extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     *
      * @return array
      */
-    public function toArray($notifiable)
+    public function toArray()
     {
         return [
-            'message' => 'Bla bla .... bomb'
+            'message' => $this->reply->owner->name . ' replied to ' . $this->thread->title,
+            'link' => $this->reply->path()
         ];
     }
 }

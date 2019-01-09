@@ -9,9 +9,11 @@
 namespace Tests\Feature;
 
 
+use App\Notifications\ThreadNotification;
 use App\Thread;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class NotificationThreadTest extends TestCase
@@ -38,14 +40,14 @@ class NotificationThreadTest extends TestCase
             'user_id' => auth()->id()
         ]);
 
-        $this->assertCount(0,auth()->user()->notifications);
+        $this->assertCount(0,auth()->user()->fresh()->notifications);
 
         $thread->addReply([
             'body' => "Liverpool",
             'user_id' => create(User::class)->id,
         ]);
 
-        $this->assertCount(1,auth()->user()->unreadNotifications);
+        $this->assertCount(1,auth()->user()->fresh()->unreadNotifications);
 
     }
 
@@ -70,7 +72,7 @@ class NotificationThreadTest extends TestCase
      */
     public function a_user_can_fetch_their_unread_notification()
     {
-        $this->signIn();
+       // $this->signIn();
 
         $thread = create(Thread::class,['user_id' => 345]);
 
@@ -91,7 +93,7 @@ class NotificationThreadTest extends TestCase
      */
     public function a_user_can_mark_notificatoin_as_read()
     {
-        $this->signIn();
+        //$this->signIn();
 
         $thread = create(Thread::class);
 
@@ -108,6 +110,25 @@ class NotificationThreadTest extends TestCase
 
         $this->assertCount(0,auth()->user()->fresh()->unreadNotifications);
 
+    }
+
+    /**
+     * @test
+     */
+    public function a_thread_notifies_all_subscribed_users_when_reply_is_added()
+    {
+        Notification::fake();
+
+        $thread = create(Thread::class);
+
+        $thread->subscribe();
+
+        $thread->addReply([
+            'body' => "Liverpool",
+            'user_id' => create(User::class,['id' => 345])->id,
+        ]);
+
+        Notification::assertSentTo(auth()->user(),ThreadNotification::class);
     }
 
 

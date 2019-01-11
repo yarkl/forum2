@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Thread;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -47,6 +48,22 @@ class ThreadTest extends TestCase
     {
         $thread = create('App\Thread');
         $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread->path());
+    }
+
+    /**
+     * @test
+     */
+    function check_if_thread_has_updates()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class);
+
+        $this->assertTrue($thread->hasUpdates());
+
+        auth()->user()->read($thread);
+
+        $this->assertFalse($thread->hasUpdates());
     }
 
 

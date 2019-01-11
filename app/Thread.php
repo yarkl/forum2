@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Events\ThreadHasNewReply;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Thread extends Model
@@ -96,4 +97,12 @@ class Thread extends Model
     {
         return $filters->apply($query);
     }
+
+    public function hasUpdates()
+    {
+        $key = auth()->user() ? auth()->user()->threadCacheKey($this): '';
+
+        return $this->updated_at > cache($key);
+    }
+
 }

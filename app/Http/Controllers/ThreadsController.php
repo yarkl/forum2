@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Thread;
 use App\Channel;
 use App\Filters\ThreadsFilter;
+
 class ThreadsController extends Controller
 {
 
@@ -48,7 +47,7 @@ class ThreadsController extends Controller
     }
 
     public function store(Request $request){
-        //dd(request()->all());
+
         $request->validate([
             'title' => 'required',
             'body' => 'required',

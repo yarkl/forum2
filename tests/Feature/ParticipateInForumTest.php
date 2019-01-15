@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Reply;
+use App\Thread;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -24,8 +26,11 @@ class ParticipateInForumTest extends TestCase
    public function test_a_reply_requires_a_body()
    {
        $this->withExceptionHandling()->signIn();
+
        $thread = create('App\Thread');
+
        $reply = make('App\Reply', ['body' => null]);
+
        $this->post($thread->path().'/replies', $reply->toArray())
            ->assertSessionHasErrors('body');
    }
@@ -65,6 +70,23 @@ class ParticipateInForumTest extends TestCase
         $this->patch("/replies/{$reply->id}",['body' => $reply->body])->assertStatus(200);
 
         $this->assertDatabaseHas('replies', ['id' => $reply->id,'body' => $reply->body]);
+    }
+
+    /**
+     * @test
+     */
+    public function reply_that_contains_spam_may_not_be_created()
+    {
+        $this->signIn();
+
+        $thread = create(Thread::class);
+
+        $reply = make(Reply::class,['body' => 'Yahoo customer support','thread_id' => $thread->id]);
+
+        $this->expectExceptionMessage("Your reply contains spam.");
+
+        $this->post($thread->path().'/replies', $reply->toArray())
+            ->assertSessionHasErrors('body');
     }
 
 }

@@ -44,7 +44,7 @@ class NotificationThreadTest extends TestCase
 
         $thread->addReply([
             'body' => "Liverpool",
-            'user_id' => create(User::class)->id,
+            'user_id' => create(User::class)->id
         ]);
 
         $this->assertCount(1,auth()->user()->fresh()->unreadNotifications);

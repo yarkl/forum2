@@ -1,6 +1,6 @@
 <template>
-    <div class="alert alert-success alert-flash" role="alert" v-show="show">
-        <strong>Success!</strong> {{ body }}
+    <div class="alert alert-flash" :class="'alert-' + level " role="alert" v-show="show" v-text="body">
+
     </div>
 </template>
 
@@ -11,7 +11,8 @@
         data() {
             return {
                 body: '',
-                show: false
+                show: false,
+                level: false
             }
         },
 
@@ -21,15 +22,15 @@
             }
 
             Event.$on(
-                'flash', message => this.flash(message)
+                'flash', data => this.flash(data)
             );
         },
 
         methods: {
-            flash(message) {
-                this.body = message;
+            flash(data) {
+                this.body = data.message;
                 this.show = true;
-
+                this.level = data.level;
                 this.hide();
             },
 

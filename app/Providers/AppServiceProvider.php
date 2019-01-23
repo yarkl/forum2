@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Channel;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\View;
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +15,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //\View::share('channels', Channel::all());
+
+        Validator::extend("spamfree",'\App\Rules\SpamFree@passes');
     }
 
     /**

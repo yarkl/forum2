@@ -5,6 +5,7 @@ namespace App;
 use App\Events\ThreadHasNewReply;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use function PHPSTORM_META\type;
 
 class Thread extends Model
 {

@@ -66,6 +66,6 @@ Vue.prototype.authorize = function (handler) {
 };
 
 
-window.flash = function (message) {
-    window.Event.$emit('flash', message);
+window.flash = function (message,level = 'success') {
+    window.Event.$emit('flash', {message:message,level:level});
 };

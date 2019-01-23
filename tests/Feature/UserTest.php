@@ -2,19 +2,25 @@
 
 namespace Tests\Feature;
 
+use App\Reply;
+use App\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
+    use DatabaseMigrations;
     /**
-     * A basic test example.
-     *
-     * @return void
+     * @test
      */
-    public function testExample()
+    public function a_user_can_fetch_most_recent_reply()
     {
-        $this->assertTrue(true);
+        $user = create(User::class);
+
+        $reply = create(Reply::class,['user_id' => $user->id]);
+
+        $this->assertEquals($reply->id,$user->lastReply->id);
     }
 }

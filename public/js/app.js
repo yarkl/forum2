@@ -12589,7 +12589,9 @@ Vue.prototype.authorize = function (handler) {
 };
 
 window.flash = function (message) {
-    window.Event.$emit('flash', message);
+    var level = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'success';
+
+    window.Event.$emit('flash', { message: message, level: level });
 };
 
 /***/ }),
@@ -43785,7 +43787,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             body: '',
-            show: false
+            show: false,
+            level: false
         };
     },
     created: function created() {
@@ -43795,17 +43798,17 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.flash(this.message);
         }
 
-        Event.$on('flash', function (message) {
-            return _this.flash(message);
+        Event.$on('flash', function (data) {
+            return _this.flash(data);
         });
     },
 
 
     methods: {
-        flash: function flash(message) {
-            this.body = message;
+        flash: function flash(data) {
+            this.body = data.message;
             this.show = true;
-
+            this.level = data.level;
             this.hide();
         },
         hide: function hide() {
@@ -43826,20 +43829,15 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    {
-      directives: [
-        { name: "show", rawName: "v-show", value: _vm.show, expression: "show" }
-      ],
-      staticClass: "alert alert-success alert-flash",
-      attrs: { role: "alert" }
-    },
-    [
-      _c("strong", [_vm._v("Success!")]),
-      _vm._v(" " + _vm._s(_vm.body) + "\n    ")
-    ]
-  )
+  return _c("div", {
+    directives: [
+      { name: "show", rawName: "v-show", value: _vm.show, expression: "show" }
+    ],
+    staticClass: "alert alert-flash",
+    class: "alert-" + _vm.level,
+    attrs: { role: "alert" },
+    domProps: { textContent: _vm._s(_vm.body) }
+  })
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -45171,7 +45169,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         addReply: function addReply() {
             var _this = this;
 
-            axios.post(location.pathname + '/replies', { body: this.body }).then(function (_ref) {
+            axios.post(location.pathname + '/replies', { body: this.body }).catch(function (error) {
+                return window.flash(error.response.data, 'danger');
+            }).then(function (_ref) {
                 var data = _ref.data;
 
                 _this.body = '';

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReplyRequest;
+use App\Notifications\MentionUserNotification;
 use App\Reply;
 use App\Thread;
-use Illuminate\Support\Facades\Gate;
+use App\User;
+
 
 
 class RepliesController extends Controller
@@ -19,26 +22,16 @@ class RepliesController extends Controller
         return $thread->replies()->paginate(3);
     }
 
-    public function store($channelId, Thread $thread)
+    public function store($channelId, Thread $thread,ReplyRequest $replyRequest)
     {
-        if (Gate::denies('create', new Reply)) {
-            return response("Wait",422);
-        }
-
-        //$this->authorize('create',new Reply);
-
-       $this->validate(request(), ['body' => 'required|spamfree']);
-
-       $reply = $thread->addReply([
+        $reply = $thread->addReply([
            'body' => request('body'),
            'user_id' => auth()->id() ? auth()->id() : request("user_id")
-       ]);
+        ]);
 
-       if (request()->expectsJson()) {
-          return $reply->load('owner');
-       }
 
-        return redirect($thread->path())->with('flash', 'Your reply has been published!');
+        return  $reply->load('owner');
+
     }
 
 

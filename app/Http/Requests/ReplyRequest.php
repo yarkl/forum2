@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Reply;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ReplyRequest extends FormRequest
@@ -13,7 +15,7 @@ class ReplyRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return Gate::allows('create', new Reply());
     }
 
     /**
@@ -24,7 +26,7 @@ class ReplyRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'body' => 'required|spamfree'
         ];
     }
 }

@@ -7,11 +7,9 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ThreadNotification extends Notification
+class MentionUserNotification extends Notification
 {
     use Queueable;
-
-    protected $thread;
 
     protected $reply;
 
@@ -20,9 +18,8 @@ class ThreadNotification extends Notification
      *
      * @return void
      */
-    public function __construct($thread,$reply)
+    public function __construct($reply)
     {
-        $this->thread = $thread;
         $this->reply = $reply;
     }
 
@@ -54,14 +51,13 @@ class ThreadNotification extends Notification
     /**
      * Get the array representation of the notification.
      *
-     *
+     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray()
     {
         return [
-            'message' => $this->reply->owner->name . ' replied to ' . $this->thread->title,
-            'link' => $this->reply->path()
+            'message' => $this->reply->owner->name . ' mention you ',
         ];
     }
 }

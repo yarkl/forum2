@@ -62,6 +62,16 @@
 
         methods: {
             update() {
+                var matches = this.body.match(/^[\s]+$/);
+                if(Array.isArray(matches)){
+                    console.log("Hello");
+                    flash("You cant add empty reply","danger");
+                    return false;
+                }
+                if(this.body === "" ){
+                    flash("You cant add empty reply","danger");
+                    return false;
+                }
                 axios.patch('/replies/' + this.data.id, {
                     body: this.body
                 });
@@ -75,7 +85,7 @@
                 axios.delete('/replies/' + this.data.id);
 
                 this.$emit('deleted', this.data.id);
-            }
+            },
         }
     }
 </script>

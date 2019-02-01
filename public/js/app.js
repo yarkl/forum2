@@ -44785,7 +44785,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             editing: false,
             id: this.data.id,
-            body: this.data.body
+            body: this.data.body,
+            oldBody: false
         };
     },
 
@@ -44822,6 +44823,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.editing = false;
 
             flash('Updated!');
+        },
+        allowEdit: function allowEdit() {
+            this.editing = true;
+            var match = this.body.match('<.+>(@.+)</a>');
+            if (match) {
+                this.oldBody = this.body;
+                this.body = this.body.replace(match[0], match[1]);
+            }
+        },
+        cancelEdition: function cancelEdition() {
+            this.editing = false;
+            this.body = this.oldBody;
         },
         destroy: function destroy() {
             axios.delete('/replies/' + this.data.id);
@@ -45007,7 +45020,7 @@ var render = function() {
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.body },
+                  domProps: { value: _vm.body, innerHTML: _vm._s(_vm.body) },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {
@@ -45032,30 +45045,19 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-xs btn-link",
-                  on: {
-                    click: function($event) {
-                      _vm.editing = false
-                    }
-                  }
+                  on: { click: _vm.cancelEdition }
                 },
                 [_vm._v("Cancel")]
               )
             ])
-          : _c("div", { domProps: { textContent: _vm._s(_vm.body) } })
+          : _c("div", { domProps: { innerHTML: _vm._s(_vm.body) } })
       ]),
       _vm._v(" "),
       _vm.canUpdate
         ? _c("div", { staticClass: "panel-footer level" }, [
             _c(
               "button",
-              {
-                staticClass: "btn btn-xs mr-1",
-                on: {
-                  click: function($event) {
-                    _vm.editing = true
-                  }
-                }
-              },
+              { staticClass: "btn btn-xs mr-1", on: { click: _vm.allowEdit } },
               [_vm._v("Edit")]
             ),
             _vm._v(" "),

@@ -26,6 +26,31 @@ class ReplyTest extends TestCase
         $this->assertTrue($reply->wasJustPublished());
     }
 
+    /**
+     * @test
+     */
+    public function it_wrap_mention_user_in_a_tag()
+    {
+        $this->signIn();
+
+        $reply = create(Reply::class,['body' => "Hello @JaneDoe!?? @IvanPedro"]);
+
+        $this->assertContains(
+            '<a href="/profiles/JaneDoe">@JaneDoe</a>',
+            $reply->body
+        );
+
+        $this->assertContains(
+            '<a href="/profiles/IvanPedro">@IvanPedro</a>',
+            $reply->body
+        );
+
+        $this->assertNotContains(
+            '<a href="/profiles/Dbal">@NeDbal</a>',
+            $reply->body
+        );
+    }
+
 
 
 }

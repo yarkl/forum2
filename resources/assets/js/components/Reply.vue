@@ -17,7 +17,7 @@
         <div class="panel-body">
             <div v-if="editing">
                 <div class="form-group">
-                    <textarea class="form-control" v-model="body" v-html="body"></textarea>
+                    <textarea class="form-control" v-model="body" ></textarea>
                 </div>
 
                 <button class="btn btn-xs btn-primary" @click="update">Update</button>
@@ -64,6 +64,7 @@
         methods: {
             update() {
                 var matches = this.body.match(/^[\s]+$/);
+
                 if(Array.isArray(matches)){
                     console.log("Hello");
                     flash("You cant add empty reply","danger");
@@ -85,7 +86,9 @@
             allowEdit()
             {
                 this.editing = true;
-                let match = this.body.match('<.+>(@.+)</a>');
+                let regex = new RegExp(/<.+>(@.+)<\/a>/g);
+                let match = regex.exec(this.body);
+                console.log(match);
                 if(match){
                     this.oldBody = this.body;
                     this.body = this.body.replace(match[0],match[1]);

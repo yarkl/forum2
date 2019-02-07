@@ -43935,7 +43935,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -43965,14 +43965,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
     data: function data() {
         return {
-            notifications: false
+            notifications: false,
+            notificationId: false
         };
     },
+
+
+    watch: {
+        notificationId: function notificationId() {
+            var _this = this;
+
+            window.axios.delete('/profiles/' + window.App.user.name + '/notifications/' + this.notificationId);
+            var elem = this.notifications.find(function (element) {
+                return element.id === _this.notificationId;
+            });
+            window.location.href = elem.data.link;
+        }
+    },
+
     created: function created() {
-        var _this = this;
+        var _this2 = this;
 
         window.axios.get('/profiles/' + window.App.user.name + '/notifications').then(function (response) {
-            return _this.notifications = response.data;
+            return _this2.notifications = response.data;
         });
     }
 });
@@ -43994,9 +44009,19 @@ var render = function() {
           { staticClass: "dropdown-menu" },
           _vm._l(_vm.notifications, function(notification) {
             return _c("li", [
-              _c("a", { attrs: { href: notification.data.link } }, [
-                _vm._v(_vm._s(notification.data.message))
-              ])
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.notificationId = notification.id
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(notification.data.message))]
+              )
             ])
           })
         )
@@ -44807,6 +44832,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     methods: {
         update: function update() {
             var matches = this.body.match(/^[\s]+$/);
+
             if (Array.isArray(matches)) {
                 console.log("Hello");
                 flash("You cant add empty reply", "danger");
@@ -44826,7 +44852,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         allowEdit: function allowEdit() {
             this.editing = true;
-            var match = this.body.match('<.+>(@.+)</a>');
+            var regex = new RegExp(/<.+>(@.+)<\/a>/g);
+            var match = regex.exec(this.body);
+            console.log(match);
             if (match) {
                 this.oldBody = this.body;
                 this.body = this.body.replace(match[0], match[1]);
@@ -45020,7 +45048,7 @@ var render = function() {
                     }
                   ],
                   staticClass: "form-control",
-                  domProps: { value: _vm.body, innerHTML: _vm._s(_vm.body) },
+                  domProps: { value: _vm.body },
                   on: {
                     input: function($event) {
                       if ($event.target.composing) {

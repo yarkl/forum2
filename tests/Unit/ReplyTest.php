@@ -29,7 +29,7 @@ class ReplyTest extends TestCase
     /**
      * @test
      */
-    public function it_wrap_mention_user_in_a_tag()
+    public function it_wrap_mentioned_user_in_a_tag()
     {
         $this->signIn();
 

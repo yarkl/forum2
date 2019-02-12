@@ -24,6 +24,11 @@
 </template>
 
 <script>
+
+    import 'at.js';
+    import 'jquery.caret';
+
+
     export default {
 
         data() {
@@ -52,6 +57,21 @@
                         this.$emit('created', data);
                     });
             }
+        },
+        mounted(){
+            $('#body').atwho({
+              at: "@",
+              limit: 5,
+              //displayTimeout: 1000,
+              maxLen: 40,
+              callbacks: {
+                remoteFilter: function(query, callback) {
+                  $.getJSON("/users", {name: query}, function(data) {
+                    callback(data)
+                  });
+                }
+              }
+            });
         }
     }
 </script>

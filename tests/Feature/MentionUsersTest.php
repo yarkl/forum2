@@ -38,4 +38,21 @@ class MentionUsersTest extends TestCase
 
         $this->assertCount(1,$user2->notifications);
     }
+
+    /**
+     * @test
+     */
+    public function it_returns_names_when_user_try_to_mention_someone()
+    {
+        
+        $user1 = create(User::class,['name' => 'User1']);
+
+        $user2 = create(User::class,['name' => 'User2']);
+
+        $user2 = create(User::class,['name' => 'Gendolf']);
+
+        $response = $this->json('get' , '/users?name=Use')->json();
+
+        $this->assertCount(2,$response);
+    }
 }

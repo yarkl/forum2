@@ -20,11 +20,11 @@ class ThreadsController extends Controller
 
         if ($channel->exists) {
             //dd($channel->threads());
-            $threads = $channel->threads()->latest();
+            $threads = $channel->threads()->paginate(5)->latest();
         } else {
             $threads = Thread::latest();
         }
-        $threads = $threads->filter($filters)->get();
+        $threads = $threads->filter($filters)->paginate(5);
 
         if(request()->wantsJson()){
             return $threads;
@@ -79,6 +79,4 @@ class ThreadsController extends Controller
         $thread->delete();
         return redirect('threads');
     }
-
-
 }

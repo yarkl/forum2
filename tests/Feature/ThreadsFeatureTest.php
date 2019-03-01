@@ -42,7 +42,6 @@ class ThreadsFeatureTest extends TestCase
 
         $thread = create('App\Thread',['channel_id' => $channel->id + 1]);
 
-
         $this->get('threads/'. $channel->slug)
             ->assertSee($threadWithChannel->title)
             ->assertDontSee($thread->title);
@@ -76,7 +75,7 @@ class ThreadsFeatureTest extends TestCase
 
         $response = $this->getJson('threads?popular=1')->json();
 
-        $this->assertEquals([3,2,0], array_column($response,'replies_count'));
+        $this->assertEquals([3,2,0], array_column($response['data'],'replies_count'));
     }
 
     public function test_a_user_can_filter_unanswered_threads()
@@ -89,7 +88,7 @@ class ThreadsFeatureTest extends TestCase
 
         $response = $this->getJson('threads?unanswered=1')->json();
 
-        $this->assertEquals([0,0,0], array_column($response,'replies_count'));
+        $this->assertEquals([0,0,0], array_column($response['data'],'replies_count'));
 
         $this->assertCount(3,$response);
     }

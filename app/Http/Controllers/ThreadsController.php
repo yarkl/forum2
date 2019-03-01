@@ -20,7 +20,7 @@ class ThreadsController extends Controller
 
         if ($channel->exists) {
             //dd($channel->threads());
-            $threads = $channel->threads()->paginate(5)->latest();
+            $threads = $channel->threads()->latest();
         } else {
             $threads = Thread::latest();
         }

@@ -16,8 +16,8 @@ class UsersAvatarController extends Controller
     {
         $this->validate(\request(),['avatar' => 'required|image']);
         request()->file('avatar')->store('avatars','public');
-        /*$user->update([
+        $user->update([
             'avatar_path' => request()->file('avatar')->store('avatars','public')
-        ]);*/
+        ]);
     }
 }

@@ -20,4 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/threads/{channel}/{thread}', 'RepliesController@index');
 
 
-Route::post('/users/{user}/avatar', 'Api\UsersAvatarController@store');
+Route::post('/users/{user}/avatar', 'Api\UsersAvatarController@store')->name('avatar');

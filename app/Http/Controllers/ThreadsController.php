@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Thread;
 use App\Channel;
 use App\Filters\ThreadsFilter;
+use Illuminate\Support\Facades\Redis;
 
 class ThreadsController extends Controller
 {
@@ -17,9 +18,7 @@ class ThreadsController extends Controller
 
 
     public function index(Channel $channel, ThreadsFilter $filters){
-
         if ($channel->exists) {
-            //dd($channel->threads());
             $threads = $channel->threads()->latest();
         } else {
             $threads = Thread::latest();
@@ -30,8 +29,11 @@ class ThreadsController extends Controller
             return $threads;
         }
 
+        $trending = array_map(function($item){
+            return json_decode($item);
+        },Redis::zrevrange('trending_threads' , 0 , -1));
 
-       return view('threads.index', compact('threads'));
+        return view('threads.index', compact('threads','trending'));
     }
 
 
@@ -40,6 +42,14 @@ class ThreadsController extends Controller
         if(auth()->check()){
             auth()->user()->read($thread);
         }
+
+        $thread->recordVisits();
+
+        Redis::zincrby('trending_threads', 1 , json_encode([
+                'title' => $thread->title,
+                'path'  => $thread->path(),
+             ]
+        ));
 
         return view('threads.show', [
             'thread' => $thread,

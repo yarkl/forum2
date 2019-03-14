@@ -21,6 +21,7 @@ Vue.component('notifications', require('./components/Notifications.vue'));
 Vue.component('paginator', require('./components/Paginator.vue'));
 Vue.component('subscribe-button', require('./components/SubscribeButton.vue'));
 Vue.component('thread', require('./pages/Thread.vue'));
+Vue.component('image-upload', require('./components/Image-Upload.vue'));
 
 const app = new Vue({
     el: '#app'

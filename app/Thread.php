@@ -5,6 +5,7 @@ namespace App;
 use App\Events\ThreadHasNewReply;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Redis;
 use function PHPSTORM_META\type;
 
 class Thread extends Model
@@ -104,6 +105,16 @@ class Thread extends Model
         $key = auth()->user() ? auth()->user()->threadCacheKey($this): '';
 
         return $this->updated_at > cache($key);
+    }
+
+    public function recordVisits()
+    {
+        return Redis::incr("threads.{$this->id}.visits");
+    }
+
+    public function visits()
+    {
+        return (int) Redis::get("threads.{$this->id}.visits");
     }
 
 }

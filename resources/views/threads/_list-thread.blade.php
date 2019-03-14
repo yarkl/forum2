@@ -23,6 +23,10 @@
             <hr>
 
         </div>
+
+        <div class="panel-footer">
+            Views {{ $thread->visits() }}
+        </div>
     </div>
 @empty
     <p>There are no records</p>

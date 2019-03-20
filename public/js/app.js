@@ -44853,7 +44853,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         },
         allowEdit: function allowEdit() {
             this.editing = true;
-            var regex = new RegExp(/<.+>(@.+)<\/a>/g);
+            var regex = new RegExp('/<.+>(@.+)<\/a>/', 'g');
             var match = regex.exec(this.body);
             console.log(match);
             if (match) {

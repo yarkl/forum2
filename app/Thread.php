@@ -54,10 +54,6 @@ class Thread extends Model
 
     public function unsubscribe($userId = null)
     {
-        /*$this->subscription
-            ->where('user_id','=',$userId != null ? $userId : auth()->id())[0]
-            ->user->notificatons->where('notifiable_type','=',self::class)
-            ->delete();*/
         $this->subscription()->where(['user_id' => $userId != null ? $userId : auth()->id()])->delete();
     }
 

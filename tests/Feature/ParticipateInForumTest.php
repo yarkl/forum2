@@ -20,11 +20,11 @@ class ParticipateInForumTest extends TestCase
 
        $thread = create(Thread::class);
 
-       $reply = create(Reply::class);
+       $reply = make(Reply::class);
 
        $this->post($thread->repliesPath(), $reply->toArray());
 
-       $this->assertDatabaseHas('replies',['id' => $reply->id,'body'=>$reply->body]);
+       $this->assertCount(1,$thread->replies);
    }
 
    public function test_a_reply_requires_a_body()
@@ -112,7 +112,7 @@ class ParticipateInForumTest extends TestCase
 
         $this->json("POST",$thread->path() . '/replies',$reply->toArray())
             ->assertStatus(200);
-        //dd(auth()->user()->fresh()->lastReply->wasJustPublished());
+
         $this->json("POST",$thread->path() . '/replies',$reply->toArray())
             ->assertStatus(403);
     }

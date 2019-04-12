@@ -13,6 +13,10 @@ class User extends Authenticatable
 
     protected $guarded =  [];
 
+    protected $casts = [
+        'confirmed' => 'boolean'
+    ];
+
 
     public function getRouteKeyName()
     {

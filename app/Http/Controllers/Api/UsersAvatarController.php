@@ -7,10 +7,10 @@ use App\Http\Controllers\Controller;
 
 class UsersAvatarController extends Controller
 {
-   /* public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
-    }*/
+    }
 
     public function store(User $user)
     {
@@ -18,6 +18,6 @@ class UsersAvatarController extends Controller
         $user->update([
             'avatar_path' => request()->file('avatar')->store('avatars','public')
         ]);
-        return response('', [204]);
+        return response('12', 204);
     }
 }

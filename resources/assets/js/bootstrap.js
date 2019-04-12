@@ -58,14 +58,22 @@ window.Vue = require('vue');
 
 window.Event = new Vue();
 
-Vue.prototype.authorize = function (handler) {
-    // Additional admin privileges here.
-    let user = window.App.user;
+authorization = require('./authorization');
 
-    return user ? handler(user) : false;
+Vue.prototype.authorize = function (...params) {
+    // Additional admin privileges here.
+    if (!window.App.signedIn) return false;
+
+    if (typeof params[0] === 'string') {
+        return authorization[params[0]](params[1])
+    }
+
+    return params[0](window.App.user)
 };
 
 
 window.flash = function (message,level = 'success') {
     window.Event.$emit('flash', {message:message,level:level});
 };
+
+Vue.prototype.signedIn = window.App.signedIn;

@@ -24,11 +24,15 @@ class RepliesController extends Controller
 
     public function store($channelId, Thread $thread,ReplyRequest $replyRequest)
     {
-        $reply = $thread->addReply([
-           'body' => request('body'),
-           'user_id' => auth()->id() ? auth()->id() : request("user_id")
-        ]);
+        try {
+            $reply = $thread->addReply([
+                'body' => request('body'),
+                'user_id' => auth()->id() ? auth()->id() : request("user_id")
+            ],$thread);
 
+        } catch (\Exception $e) {
+            return response('', 422);
+        }
 
         return  $reply->load('owner');
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Activity;
+use App\Thread;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
@@ -15,7 +16,6 @@ class CreateThreadTest extends TestCase
 
     public function test_an_auth_can_make_threads()
     {
-        //$this->actingAs(factory('App\User')->create());
         $this->signIn();
 
         $thread = make('App\Thread');
@@ -65,6 +65,23 @@ class CreateThreadTest extends TestCase
             ->assertSessionHasErrors('channel_id');
         $this->publishThreads(['channel_id' => 1000])
             ->assertSessionHasErrors('channel_id');
+    }
+
+    function test_a_thread_requires_a_unique_slug()
+    {
+        $this->signIn();
+
+        $thread = make(Thread::class,['title' => 'Foo rab','slug' => 'foo-rab']);
+
+        $this->post('/threads',$thread->toArray());
+
+        $this->assertTrue(Thread::whereSlug(auth()->id().'-foo-rab')->exists());
+
+        $thread2 = make(Thread::class,['title' => 'Foo rab','slug' => 'foo-rab']);
+
+        $this->post('/threads',$thread2->toArray());
+
+        $this->assertTrue(Thread::whereSlug(auth()->id().'-foo-rab-2')->exists());
     }
 
     function unauthorized_users_cant_delete_a_thread(){

@@ -36,6 +36,15 @@ class ThreadTest extends TestCase
         $this->assertCount(1 ,$this->threads->replies);
     }
 
+    function test_can_be_locked()
+    {
+        $thread = create(Thread::class);
+
+        $thread->locked();
+
+        $this->assertTrue($thread->locked);
+    }
+
 
     function test_a_thread_belongs_to_a_channel()
     {
@@ -47,7 +56,7 @@ class ThreadTest extends TestCase
     function test_thread_have_a_slug()
     {
         $thread = create('App\Thread');
-        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->id, $thread->path());
+        $this->assertEquals('/threads/' . $thread->channel->slug . '/' . $thread->slug, $thread->path());
     }
 
     /**

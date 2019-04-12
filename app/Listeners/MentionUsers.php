@@ -16,8 +16,7 @@ class MentionUsers
      */
     public function handle($event)
     {
-        preg_match_all('#\@([^\s]+)#',$event->reply->body,$matches);
-
+        preg_match_all('#\@([^\s<]+)#',$event->reply->body,$matches);
 
         foreach ($matches[1] as $name){
             $user = User::where(['name' => $name])->first();

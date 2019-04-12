@@ -7,8 +7,6 @@ use App\Thread;
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class UserTest extends TestCase
 {
@@ -30,11 +28,14 @@ class UserTest extends TestCase
      */
     public function a_user_must_be_confirmed()
     {
-        $this->signIn();
+        $user = factory(User::class)->states('unconfirmed')->create();
+
+        $this->signIn($user);
 
         $thread = make(Thread::class);
 
         $this->post('/threads',$thread->toArray())
             ->assertRedirect('/threads');
     }
+
 }

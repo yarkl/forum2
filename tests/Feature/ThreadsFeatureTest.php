@@ -90,7 +90,7 @@ class ThreadsFeatureTest extends TestCase
 
         $this->assertEquals([0,0,0], array_column($response['data'],'replies_count'));
 
-        $this->assertCount(3,$response);
+        $this->assertCount(3,$response['data']);
     }
 
 

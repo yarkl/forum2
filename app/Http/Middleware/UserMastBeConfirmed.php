@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class UserMastBeConfirmedMiddleware
+class UserMastBeConfirmed
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,8 @@ class UserMastBeConfirmedMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if($request->isMethod('post')){
-            if(Auth::user()->confirmed != 1){
-                return redirect('/threads');
-            }
+        if($request->user()->confirmed != true){
+            return redirect('/threads');
         }
         return $next($request);
     }

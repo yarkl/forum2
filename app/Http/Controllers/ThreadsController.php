@@ -13,7 +13,7 @@ class ThreadsController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth')->except(['index', 'show','destroy']);
+        $this->middleware(['auth','user_confirmed'])->except(['index', 'show','destroy']);
     }
 
 
@@ -69,6 +69,7 @@ class ThreadsController extends Controller
             'channel_id' => request('channel_id'),
             'title' => request('title'),
             'body' => request('body'),
+            'slug' => request('title')
         ]);
         return redirect($thread->path())
             ->with('flash', 'Your thread has been published!');

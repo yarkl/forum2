@@ -51,6 +51,21 @@ class ReplyTest extends TestCase
         );
     }
 
+    /**
+     * @test
+     */
+    public function reply_can_be_marked_as_best()
+    {
+        $reply = create(Reply::class);
+
+        $this->assertNull($reply->thread->best_reply);
+
+        $reply->markASBest();
+
+        $this->assertEquals(1,$reply->thread->best_reply);
+
+    }
+
 
 
 }

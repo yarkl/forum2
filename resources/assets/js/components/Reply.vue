@@ -1,15 +1,15 @@
 <template>
-    <div :id="'reply-'+id" class="panel panel-default">
+    <div :id="'reply-'+id" class="panel" :class="isBest ? 'panel-success' : 'panel-default' ">
         <div class="panel-heading">
             <div class="level">
                 <h5 class="flex">
-                    <a :href="'/profiles/'+data.owner.name"
-                       v-text="data.owner.name">
-                    </a> said {{ data.created_at }}...
+                    <a :href="'/profiles/'+reply.owner.name"
+                       v-text="reply.owner.name">
+                    </a> said {{ reply.created_at }}...
                 </h5>
 
                 <div v-if="signedIn">
-                    <favorite :reply="data"></favorite>
+                    <favorite :reply="reply"></favorite>
                 </div>
             </div>
         </div>
@@ -27,9 +27,12 @@
             <div v-else v-html="body"></div>
         </div>
 
-        <div class="panel-footer level" v-if="canUpdate">
-            <button class="btn btn-xs mr-1" @click="allowEdit">Edit</button>
-            <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>
+        <div class="panel-footer level" v-if="authorize('owns', reply) || authorize('owns',reply.thread)">
+            <div>
+                <button class="btn btn-xs mr-1" @click="allowEdit">Edit</button>
+                <button class="btn btn-xs btn-danger mr-1" @click="destroy">Delete</button>
+            </div>
+            <button class="btn btn-xs mr-1" @click="markAsBest" v-show="!isBest">Mark as best</button>
         </div>
     </div>
 </template>
@@ -38,30 +41,33 @@
     import Favorite from './Favorite.vue';
 
     export default {
-        props: ['data'],
+        props: ['reply'],
 
         components: { Favorite },
 
         data() {
             return {
                 editing: false,
-                id: this.data.id,
-                body: this.data.body,
-                oldBody: false
+                id: this.reply.id,
+                body: this.reply.body,
+                oldBody: false,
+                isBest: this.reply.isBest,
             };
         },
 
-        computed: {
-            signedIn() {
-                return window.App.signedIn;
-            },
-
-            canUpdate() {
-                return this.authorize(user => this.data.user_id == user.id);
-            }
+        created(){
+            window.Event.$on('best-reply-selected',id => {
+                this.isBest = (id === this.id)
+            })
         },
 
         methods: {
+            markAsBest() {
+                this.isBest = true;
+                axios.post('/api/replies/' + this.id + '/best');
+
+                window.Event.$emit('best-reply-selected', this.id)
+            },
             update() {
                 var matches = this.body.match(/^[\s]+$/);
 
@@ -74,7 +80,7 @@
                     flash("You cant add empty reply","danger");
                     return false;
                 }
-                axios.patch('/replies/' + this.data.id, {
+                axios.patch('/replies/' + this.id, {
                     body: this.body
                 });
 
@@ -102,9 +108,9 @@
             },
 
             destroy() {
-                axios.delete('/replies/' + this.data.id);
+                axios.delete('/replies/' + this.id);
 
-                this.$emit('deleted', this.data.id);
+                this.$emit('deleted', this.id);
             },
         }
     }

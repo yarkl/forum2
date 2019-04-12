@@ -32,9 +32,24 @@ class Thread extends Model
 
     }
 
+    public function getRouteKeyName()
+    {
+       return 'slug';
+    }
+
     public function path()
     {
-        return '/threads/' . $this->channel->slug . '/' . $this->id;
+        return '/threads/' . $this->channel->slug . '/' . $this->slug;
+    }
+
+    public function lock()
+    {
+        $this->update(['locked' => true]);
+    }
+
+    public function isLocked()
+    {
+        return $this->locked == true;
     }
 
     public function replies()
@@ -67,13 +82,18 @@ class Thread extends Model
         return $this->subscription()->where(['user_id' => auth()->id()])->exists();
     }
 
+
     public function creator()
     {
         return $this->belongsTo('App\User', 'user_id');
     }
 
-    public function addReply($reply)
+    public function addReply($reply, Thread $thread)
     {
+        if ($thread->isLocked()) {
+            throw new \Exception('Thread is locked');
+        }
+
         $reply = $this->replies()->create($reply);
 
         event(new ThreadHasNewReply($this,$reply));
@@ -88,7 +108,7 @@ class Thread extends Model
 
     public function repliesPath()
     {
-        return '/threads/' . $this->channel->slug . '/' . $this->id .'/replies';
+        return '/threads/' . $this->channel->slug . '/' . $this->slug .'/replies';
     }
 
     public function scopeFilter($query, $filters)
@@ -111,6 +131,29 @@ class Thread extends Model
     public function visits()
     {
         return (int) Redis::get("threads.{$this->id}.visits");
+    }
+
+    public function setSlugAttribute($value)
+    {
+        $id = auth()->id();
+        $value =  "{$id}-". $value;
+        if (static::whereSlug($slug = str_slug($value))->exists()) {
+            $slug = $this->incrementSlug($slug);
+        }
+        $this->attributes['slug'] = $slug;
+    }
+
+    public function incrementSlug($value)
+    {
+        $max = static::whereTitle($this->title)->latest('id')->value('slug');
+        if (is_numeric($max[-1])) {
+            return preg_replace_callback('/(\d+)$/',function($match){
+                return $match[1] + 1;
+            },$max);
+
+        }
+
+        return "{$value}-2";
     }
 
 }

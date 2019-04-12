@@ -26,7 +26,7 @@ class Reply extends Model
     /**
      * @var array
      */
-    protected $appends = ['favoritesCount', 'isFavorited'];
+    protected $appends = ['favoritesCount', 'isFavorited', 'isBest'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -34,6 +34,14 @@ class Reply extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * @return bool
+     */
+    public function getIsBestAttribute()
+    {
+        return $this->thread->best_reply == $this->id;
     }
 
     /**
@@ -62,13 +70,19 @@ class Reply extends Model
         return $this->created_at->gt(Carbon::now()->subMinute());
     }
 
-
     /**
      *
      */
     public function wrap()
     {
         $this->body = preg_replace('/@([\w]+)/','<a href="/profiles/$1">$0</a>',$this->body);
+    }
+
+    public function markASBest()
+    {
+        $this->thread->best_reply = $this->id;
+
+        return $this->thread;
     }
 
 }

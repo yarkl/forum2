@@ -18,7 +18,10 @@ class CreateThreadsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('channel_id');
             $table->string('title');
+            $table->string('slug')->unique();
+            $table->integer('best_reply')->nullable();
             $table->text('body');
+            $table->boolean('locked')->default(false);
             $table->timestamps();
         });
     }

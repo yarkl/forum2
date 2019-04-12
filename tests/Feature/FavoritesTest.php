@@ -16,7 +16,7 @@ class FavoritesTest extends TestCase
 {
     use DatabaseMigrations;
 
-    public function test_guest_cant_make_a_reply(){
+    public function test_guest_cant_favorite_a_reply(){
         $this->withExceptionHandling()
         ->post('replies/1/favorites')
             ->assertRedirect('/login');

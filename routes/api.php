@@ -21,3 +21,5 @@ Route::get('/threads/{channel}/{thread}', 'RepliesController@index');
 
 
 Route::post('/users/{user}/avatar', 'Api\UsersAvatarController@store')->name('avatar');
+
+Route::post('/replies/{reply}/best', 'BestReplyController@index')->name('mark_best_reply');

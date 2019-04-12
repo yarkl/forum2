@@ -53,7 +53,7 @@ class UploadAvatarTest extends TestCase
 
         $this->postJson('/api/users/'. auth()->user()->name .'/avatar',[
             'avatar' => $file = UploadedFile::fake()->image('avatar.jpg')
-        ])->assertStatus(200);
+        ])->assertStatus(204);
 
         Storage::disk('public')->assertExists('avatars/'.$file->hashName());
 
